@@ -31,12 +31,21 @@ function initializeAuthElements() {
 
 // Vérifier l'état d'authentification
 async function checkAuthState() {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (session) {
-        updateUIForLoggedInUser(session.user);
-    } else {
-        updateUIForLoggedOutUser();
+    try {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+            console.error('Erreur vérification session:', error);
+            return;
+        }
+        
+        if (session) {
+            updateUIForLoggedInUser(session.user);
+        } else {
+            updateUIForLoggedOutUser();
+        }
+    } catch (error) {
+        console.error('Erreur vérification auth state:', error);
     }
 }
 
@@ -110,7 +119,9 @@ function setupEventListeners() {
 
 // Basculer le menu déroulant utilisateur
 function toggleUserDropdown() {
-    userDropdown.classList.toggle('show');
+    if (userDropdown) {
+        userDropdown.classList.toggle('show');
+    }
 }
 
 // Gérer la connexion
@@ -169,7 +180,8 @@ async function handleRegister(event) {
     }
     
     try {
-        const { data, error } = await supabase.auth.signUp({
+        // 1. Créer le compte d'authentification
+        const { data: authData, error: authError } = await supabase.auth.signUp({
             email,
             password,
             options: {
@@ -181,7 +193,37 @@ async function handleRegister(event) {
             }
         });
         
-        if (error) throw error;
+        if (authError) throw authError;
+        
+        // 2. Ajouter l'utilisateur dans la table users
+        if (authData.user) {
+            const fullName = `${firstName} ${lastName}`;
+            
+            const { data: userData, error: userError } = await supabase
+                .from('users')
+                .insert([
+                    {
+                        id: authData.user.id,
+                        email: email,
+                        full_name: fullName,
+                        first_name: firstName,
+                        last_name: lastName,
+                        newsletter_subscribed: newsletter || false,
+                        is_admin: false,
+                        is_active: true,
+                        created_at: new Date().toISOString()
+                    }
+                ])
+                .select();
+            
+            if (userError) {
+                console.error('Erreur création user:', userError);
+                // Ne pas bloquer l'inscription même si l'insertion échoue
+                // L'utilisateur pourra compléter son profil plus tard
+            } else {
+                console.log('Utilisateur créé dans la table:', userData);
+            }
+        }
         
         showNotification('Inscription réussie ! Vérifiez votre email pour confirmer votre compte.', 'success');
         

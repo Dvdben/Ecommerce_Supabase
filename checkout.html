@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paiement - E-Shop</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="../index.html" class="logo">E-SHOP</a>
+                
+                <nav class="nav">
+                    <ul>
+                        <li><a href="../index.html">Accueil</a></li>
+                        <li><a href="../shop.html">Boutique</a></li>
+                        <li><a href="#categories">Catégories</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <div class="user-menu">
+                        <div class="user-avatar" id="user-avatar">U</div>
+                        <div class="user-dropdown" id="user-dropdown">
+                            <a href="../login.html" id="login-link">Connexion</a>
+                            <a href="../register.html" id="register-link">Inscription</a>
+                            <a href="#" id="profile-link" style="display: none;">Mon profil</a>
+                            <a href="#" id="orders-link" style="display: none;">Mes commandes</a>
+                            <a href="#" id="logout-link" style="display: none;">Déconnexion</a>
+                        </div>
+                    </div>
+                    <div class="cart-icon">
+                        <a href="../cart.html">🛒</a>
+                        <span class="cart-count" id="cart-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Checkout Steps -->
+    <section class="section">
+        <div class="container">
+            <div class="checkout-steps">
+                <div class="checkout-step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <span class="step-label">Panier</span>
+                </div>
+                <div class="checkout-step active" data-step="2">
+                    <div class="step-number">2</div>
+                    <span class="step-label">Livraison</span>
+                </div>
+                <div class="checkout-step" data-step="3">
+                    <div class="step-number">3</div>
+                    <span class="step-label">Paiement</span>
+                </div>
+                <div class="checkout-step" data-step="4">
+                    <div class="step-number">4</div>
+                    <span class="step-label">Confirmation</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Checkout Content -->
+    <section class="section section-light">
+        <div class="container">
+            <div class="checkout-content">
+                <!-- Checkout Form -->
+                <div class="checkout-form">
+                    <h2>Informations de livraison</h2>
+                    
+                    <form id="shipping-form">
+                        <div class="form-section">
+                            <h3>Coordonnées</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">Email *</label>
+                                    <input type="email" id="checkout-email" name="email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Téléphone *</label>
+                                    <input type="tel" id="phone" name="phone" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3>Adresse de livraison</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="first-name">Prénom *</label>
+                                    <input type="text" id="checkout-first-name" name="first_name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="last-name">Nom *</label>
+                                    <input type="text" id="checkout-last-name" name="last_name" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="address">Adresse *</label>
+                                <input type="text" id="address" name="address" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="city">Ville *</label>
+                                    <input type="text" id="city" name="city" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="postal-code">Code postal *</label>
+                                    <input type="text" id="postal-code" name="postal_code" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="country">Pays *</label>
+                                <select id="country" name="country" required>
+                                    <option value="">Sélectionnez un pays</option>
+                                    <option value="FR" selected>France</option>
+                                    <option value="BE">Belgique</option>
+                                    <option value="CH">Suisse</option>
+                                    <option value="CA">Canada</option>
+                                    <!-- Autres pays -->
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-section">
+                            <h3>Méthode de livraison</h3>
+                            <div class="shipping-methods">
+                                <div class="shipping-method">
+                                    <input type="radio" id="standard" name="shipping" value="standard" checked>
+                                    <label for="standard">
+                                        <span class="method-name">Livraison standard</span>
+                                        <span class="method-price">5,99 €</span>
+                                        <span class="method-desc">Délai: 3-5 jours ouvrables</span>
+                                    </label>
+                                </div>
+                                <div class="shipping-method">
+                                    <input type="radio" id="express" name="shipping" value="express">
+                                    <label for="express">
+                                        <span class="method-name">Livraison express</span>
+                                        <span class="method-price">12,99 €</span>
+                                        <span class="method-desc">Délai: 1-2 jours ouvrables</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <a href="../cart.html" class="btn btn-secondary">Retour au panier</a>
+                            <button type="submit" class="btn btn-primary">Continuer vers le paiement</button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Order Summary -->
+                <div class="order-summary">
+                    <h2>Résumé de la commande</h2>
+                    
+                    <div class="summary-items" id="checkout-items">
+                        <!-- Items loaded dynamically -->
+                    </div>
+                    
+                    <div class="summary-totals">
+                        <div class="summary-row">
+                            <span>Sous-total</span>
+                            <span id="subtotal">0,00 €</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Livraison</span>
+                            <span id="shipping-cost">5,99 €</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Taxes</span>
+                            <span id="taxes">0,00 €</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span id="total">0,00 €</span>
+                        </div>
+                    </div>
+                    
+                    <div class="secure-checkout">
+                        <div class="secure-badge">
+                            🔒 Paiement sécurisé
+                        </div>
+                        <p>Vos données sont protégées par un chiffrement SSL 256 bits</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>E-SHOP</h3>
+                    <p>Votre destination shopping pour des produits de qualité à prix abordables.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Liens rapides</h3>
+                    <ul>
+                        <li><a href="../index.html">Accueil</a></li>
+                        <li><a href="../shop.html">Boutique</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Catégories</h3>
+                    <ul id="footer-categories">
+                        <!-- Categories loaded dynamically -->
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li>Email: contact@eshop.fr</li>
+                        <li>Téléphone: +33 1 23 45 67 89</li>
+                        <li>Adresse: 123 Rue du Commerce, Paris</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 E-SHOP. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../JS/auth.js"></script>
+    <script type="module" src="../JS/cart.js"></script>
+    <script type="module" src="../JS/checkout.js"></script>
+</body>
+</html>

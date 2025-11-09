@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Utilisateurs - E-Shop Admin</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/admin.css">
+</head>
+<body class="admin-body">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <h2>E-SHOP ADMIN</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="products.html" class="nav-link">
+                        <span class="nav-icon">📦</span>
+                        <span class="nav-text">Produits</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="categories.html" class="nav-link">
+                        <span class="nav-icon">🏷️</span>
+                        <span class="nav-text">Catégories</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="orders.html" class="nav-link">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text">Commandes</span>
+                        <span class="badge" id="pending-orders-count">0</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="users.html" class="nav-link">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Utilisateurs</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="../index.html" class="btn btn-secondary btn-sm">
+                ← Retour au site
+            </a>
+            <button id="admin-logout" class="btn btn-danger btn-sm">
+                Déconnexion
+            </button>
+        </div>
+    </aside>
+
+    <!-- Admin Main Content -->
+    <main class="admin-main">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h1>Gestion des utilisateurs</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="admin-user">
+                    <span id="admin-user-name">Administrateur</span>
+                    <div class="user-avatar" id="admin-user-avatar">A</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Users Content -->
+        <div class="admin-content">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon revenue">👥</div>
+                    <div class="stat-info">
+                        <h3 id="total-users">0</h3>
+                        <p>Utilisateurs totaux</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon orders">👑</div>
+                    <div class="stat-info">
+                        <h3 id="admin-users">0</h3>
+                        <p>Administrateurs</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon products">📈</div>
+                    <div class="stat-info">
+                        <h3 id="new-users">0</h3>
+                        <p>Nouveaux (30j)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters and Search -->
+            <div class="filters-card">
+                <div class="filters-header">
+                    <div class="search-box">
+                        <input type="text" id="user-search" placeholder="Rechercher un utilisateur...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    
+                    <div class="filters-actions">
+                        <select id="role-filter">
+                            <option value="">Tous les rôles</option>
+                            <option value="admin">Administrateurs</option>
+                            <option value="user">Utilisateurs</option>
+                        </select>
+                        <select id="status-filter">
+                            <option value="">Tous les statuts</option>
+                            <option value="active">Actif</option>
+                            <option value="inactive">Inactif</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Tous les utilisateurs</h3>
+                    <div class="table-actions">
+                        <button class="btn-icon" id="export-users">
+                            📊 Exporter
+                        </button>
+                        <button class="btn-icon" id="refresh-users">
+                            🔄 Actualiser
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Utilisateur</th>
+                                <th>Email</th>
+                                <th>Rôle</th>
+                                <th>Commandes</th>
+                                <th>Inscrit le</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Users loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="table-footer">
+                    <div class="table-info">
+                        <span id="users-count">0 utilisateurs</span>
+                    </div>
+                    <div class="pagination">
+                        <button class="btn-icon" id="prev-page" disabled>
+                            ←
+                        </button>
+                        <span id="current-page">1</span>
+                        <span>sur</span>
+                        <span id="total-pages">1</span>
+                        <button class="btn-icon" id="next-page" disabled>
+                            →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- User Detail Modal -->
+    <div class="modal" id="user-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Détails de l'utilisateur</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="user-detail-grid">
+                    <!-- User Info -->
+                    <div class="user-section">
+                        <div class="user-avatar-large">
+                            <span id="user-avatar-large">U</span>
+                        </div>
+                        <div class="user-info">
+                            <h4 id="user-full-name"></h4>
+                            <p id="user-email"></p>
+                            <div class="user-stats">
+                                <div class="stat">
+                                    <span class="stat-value" id="user-orders">0</span>
+                                    <span class="stat-label">Commandes</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value" id="user-total-spent">0€</span>
+                                    <span class="stat-label">Dépensé</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Account Details -->
+                    <div class="user-section">
+                        <h4>Informations du compte</h4>
+                        <div class="account-info">
+                            <div class="info-row">
+                                <span class="info-label">ID:</span>
+                                <span class="info-value" id="user-id"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Inscrit le:</span>
+                                <span class="info-value" id="user-created-at"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Dernière connexion:</span>
+                                <span class="info-value" id="user-last-login"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Rôle:</span>
+                                <span class="info-value">
+                                    <select id="user-role" class="role-select">
+                                        <option value="false">Utilisateur</option>
+                                        <option value="true">Administrateur</option>
+                                    </select>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Information -->
+                    <div class="user-section">
+                        <h4>Informations de contact</h4>
+                        <div class="contact-info">
+                            <div class="info-row">
+                                <span class="info-label">Téléphone:</span>
+                                <span class="info-value" id="user-phone"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Adresse:</span>
+                                <span class="info-value" id="user-address"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="modal-cancel">
+                    Fermer
+                </button>
+                <button type="button" class="btn btn-primary" id="save-user">
+                    Enregistrer les modifications
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script type="module" src="../JS/supabase.js"></script>
+    <script type="module" src="../JS/admin.js"></script>
+    <script type="module" src="../JS/admin-users.js"></script>
+</body>
+</html>

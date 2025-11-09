@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Shop - Votre boutique en ligne</title>
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">E-SHOP</a>
+                
+                <nav class="nav">
+                    <ul>
+                        <li><a href="index.html" class="active">Accueil</a></li>
+                        <li><a href="shop.html">Boutique</a></li>
+                        <li><a href="#categories">Catégories</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <a href="login.html" class="btn btn-secondary">Connexion</a>
+                    <a href="register.html" class="btn btn-primary">Inscription</a>
+                    <div class="cart-icon">
+                        <a href="cart.html">🛒</a>
+                        <span class="cart-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Bienvenue dans votre boutique en ligne</h1>
+                <p>Découvrez des produits exceptionnels à des prix imbattables</p>
+                <a href="shop.html" class="btn btn-accent">Découvrir la boutique</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Produits populaires</h2>
+            <div class="products-grid" id="featured-products">
+                <!-- Products loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Nos catégories</h2>
+            <div class="categories-grid" id="categories-container">
+                <!-- Categories loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Abonnez-vous à notre newsletter</h2>
+                <p>Recevez les dernières nouveautés et offres exclusives</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Votre email" required>
+                    <button type="submit" class="btn btn-accent">S'abonner</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>E-SHOP</h3>
+                    <p>Votre destination shopping pour des produits de qualité à prix abordables.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Liens rapides</h3>
+                    <ul>
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="shop.html">Boutique</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Catégories</h3>
+                    <ul id="footer-categories">
+                        <!-- Categories loaded dynamically -->
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li>Email: contact@eshop.fr</li>
+                        <li>Téléphone: +33 1 23 45 67 89</li>
+                        <li>Adresse: 123 Rue du Commerce, Paris</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 E-SHOP. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="JS/main.js"></script>
+</body>
+</html>

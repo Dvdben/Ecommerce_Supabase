@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Commandes - E-Shop Admin</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/admin.css">
+</head>
+<body class="admin-body">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <h2>E-SHOP ADMIN</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="products.html" class="nav-link">
+                        <span class="nav-icon">📦</span>
+                        <span class="nav-text">Produits</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="categories.html" class="nav-link">
+                        <span class="nav-icon">🏷️</span>
+                        <span class="nav-text">Catégories</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="orders.html" class="nav-link">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text">Commandes</span>
+                        <span class="badge" id="pending-orders-count">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="users.html" class="nav-link">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Utilisateurs</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="../index.html" class="btn btn-secondary btn-sm">
+                ← Retour au site
+            </a>
+            <button id="admin-logout" class="btn btn-danger btn-sm">
+                Déconnexion
+            </button>
+        </div>
+    </aside>
+
+    <!-- Admin Main Content -->
+    <main class="admin-main">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h1>Gestion des commandes</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="admin-user">
+                    <span id="admin-user-name">Administrateur</span>
+                    <div class="user-avatar" id="admin-user-avatar">A</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Orders Content -->
+        <div class="admin-content">
+            <!-- Filters and Search -->
+            <div class="filters-card">
+                <div class="filters-header">
+                    <div class="search-box">
+                        <input type="text" id="order-search" placeholder="Rechercher une commande...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                    
+                    <div class="filters-actions">
+                        <select id="status-filter">
+                            <option value="">Tous les statuts</option>
+                            <option value="pending">En attente</option>
+                            <option value="processing">En cours</option>
+                            <option value="shipped">Expédié</option>
+                            <option value="delivered">Livré</option>
+                            <option value="cancelled">Annulé</option>
+                            <option value="completed">Terminé</option>
+                        </select>
+                        <select id="date-filter">
+                            <option value="">Toutes les dates</option>
+                            <option value="today">Aujourd'hui</option>
+                            <option value="week">Cette semaine</option>
+                            <option value="month">Ce mois</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Toutes les commandes</h3>
+                    <div class="table-actions">
+                        <button class="btn-icon" id="export-orders">
+                            📊 Exporter
+                        </button>
+                        <button class="btn-icon" id="refresh-orders">
+                            🔄 Actualiser
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Commande</th>
+                                <th>Client</th>
+                                <th>Date</th>
+                                <th>Montant</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body">
+                            <!-- Orders loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="table-footer">
+                    <div class="table-info">
+                        <span id="orders-count">0 commandes</span>
+                    </div>
+                    <div class="pagination">
+                        <button class="btn-icon" id="prev-page" disabled>
+                            ←
+                        </button>
+                        <span id="current-page">1</span>
+                        <span>sur</span>
+                        <span id="total-pages">1</span>
+                        <button class="btn-icon" id="next-page" disabled>
+                            →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Order Detail Modal -->
+    <div class="modal" id="order-modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 id="modal-title">Détails de la commande #<span id="order-id"></span></h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="order-detail-grid">
+                    <!-- Order Info -->
+                    <div class="order-section">
+                        <h4>Informations de la commande</h4>
+                        <div class="order-info">
+                            <div class="info-row">
+                                <span class="info-label">Statut:</span>
+                                <span class="info-value">
+                                    <select id="order-status" class="status-select">
+                                        <option value="pending">En attente</option>
+                                        <option value="processing">En cours</option>
+                                        <option value="shipped">Expédié</option>
+                                        <option value="delivered">Livré</option>
+                                        <option value="cancelled">Annulé</option>
+                                        <option value="completed">Terminé</option>
+                                    </select>
+                                </span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Date:</span>
+                                <span class="info-value" id="order-date"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Total:</span>
+                                <span class="info-value" id="order-total"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Méthode de paiement:</span>
+                                <span class="info-value" id="order-payment"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Customer Info -->
+                    <div class="order-section">
+                        <h4>Informations client</h4>
+                        <div class="customer-info">
+                            <div class="info-row">
+                                <span class="info-label">Nom:</span>
+                                <span class="info-value" id="customer-name"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Email:</span>
+                                <span class="info-value" id="customer-email"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Téléphone:</span>
+                                <span class="info-value" id="customer-phone"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Shipping Address -->
+                    <div class="order-section">
+                        <h4>Adresse de livraison</h4>
+                        <div class="address-info" id="shipping-address">
+                            <!-- Address loaded dynamically -->
+                        </div>
+                    </div>
+                    
+                    <!-- Order Items -->
+                    <div class="order-section full-width">
+                        <h4>Articles commandés</h4>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Produit</th>
+                                        <th>Prix</th>
+                                        <th>Quantité</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="order-items">
+                                    <!-- Order items loaded dynamically -->
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3">Sous-total</td>
+                                        <td id="order-subtotal"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">Livraison</td>
+                                        <td id="order-shipping"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3">Taxes</td>
+                                        <td id="order-taxes"></td>
+                                    </tr>
+                                    <tr class="total-row">
+                                        <td colspan="3">Total</td>
+                                        <td id="order-grand-total"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="modal-cancel">
+                    Fermer
+                </button>
+                <button type="button" class="btn btn-primary" id="save-status">
+                    Enregistrer les modifications
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script type="module" src="../JS/supabase.js"></script>
+    <script type="module" src="../JS/admin.js"></script>
+    <script type="module" src="../JS/admin-orders.js"></script>
+</body>
+</html>

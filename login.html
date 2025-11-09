@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - E-Shop</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="../index.html" class="logo">E-SHOP</a>
+                
+                <nav class="nav">
+                    <ul>
+                        <li><a href="../index.html">Accueil</a></li>
+                        <li><a href="../shop.html">Boutique</a></li>
+                        <li><a href="#categories">Catégories</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <a href="login.html" class="btn btn-secondary active">Connexion</a>
+                    <a href="register.html" class="btn btn-primary">Inscription</a>
+                    <div class="cart-icon">
+                        <a href="../cart.html">🛒</a>
+                        <span class="cart-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Auth Container -->
+    <main class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Connexion</h1>
+                <p>Connectez-vous à votre compte pour continuer</p>
+            </div>
+            
+            <form class="auth-form" id="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="votre@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="password" name="password" required placeholder="Votre mot de passe">
+                </div>
+                
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <span>Se souvenir de moi</span>
+                    </label>
+                    
+                    <a href="#forgot-password" class="forgot-password">Mot de passe oublié ?</a>
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-lg">Se connecter</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>Pas encore de compte ? <a href="register.html">Créer un compte</a></p>
+            </div>
+            
+            <div class="social-login">
+                <div class="divider">
+                    <span>Ou continuer avec</span>
+                </div>
+                
+                <div class="social-buttons">
+                    <button type="button" class="btn btn-secondary btn-icon">
+                        <span>G</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-icon">
+                        <span>f</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-icon">
+                        <span>in</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Forgot Password Modal -->
+    <div class="modal" id="forgot-password-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Réinitialiser le mot de passe</h3>
+                <button type="button" class="modal-close">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p>Entrez votre adresse email pour recevoir les instructions de réinitialisation.</p>
+                
+                <form id="forgot-password-form">
+                    <div class="form-group">
+                        <label for="reset-email">Email</label>
+                        <input type="email" id="reset-email" name="email" required placeholder="votre@email.com">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Envoyer les instructions</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>E-SHOP</h3>
+                    <p>Votre destination shopping pour des produits de qualité à prix abordables.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Liens rapides</h3>
+                    <ul>
+                        <li><a href="../index.html">Accueil</a></li>
+                        <li><a href="../shop.html">Boutique</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Catégories</h3>
+                    <ul id="footer-categories">
+                        <!-- Categories loaded dynamically -->
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li>Email: contact@eshop.fr</li>
+                        <li>Téléphone: +33 1 23 45 67 89</li>
+                        <li>Adresse: 123 Rue du Commerce, Paris</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 E-SHOP. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="../JS/auth.js"></script>
+</body>
+</html>

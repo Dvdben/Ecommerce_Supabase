@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Catégories - E-Shop Admin</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/admin.css">
+</head>
+<body class="admin-body">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <h2>E-SHOP ADMIN</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="products.html" class="nav-link">
+                        <span class="nav-icon">📦</span>
+                        <span class="nav-text">Produits</span>
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a href="categories.html" class="nav-link">
+                        <span class="nav-icon">🏷️</span>
+                        <span class="nav-text">Catégories</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="orders.html" class="nav-link">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text">Commandes</span>
+                        <span class="badge" id="pending-orders-count">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="users.html" class="nav-link">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Utilisateurs</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="../index.html" class="btn btn-secondary btn-sm">
+                ← Retour au site
+            </a>
+            <button id="admin-logout" class="btn btn-danger btn-sm">
+                Déconnexion
+            </button>
+        </div>
+    </aside>
+
+    <!-- Admin Main Content -->
+    <main class="admin-main">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h1>Gestion des catégories</h1>
+            </div>
+            
+            <div class="header-right">
+                <button class="btn btn-primary" id="add-category-btn">
+                    + Nouvelle catégorie
+                </button>
+                <div class="admin-user">
+                    <span id="admin-user-name">Administrateur</span>
+                    <div class="user-avatar" id="admin-user-avatar">A</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Categories Content -->
+        <div class="admin-content">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon revenue">🏷️</div>
+                    <div class="stat-info">
+                        <h3 id="total-categories">0</h3>
+                        <p>Catégories totales</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon orders">📦</div>
+                    <div class="stat-info">
+                        <h3 id="total-products-cat">0</h3>
+                        <p>Produits actifs</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon products">💰</div>
+                    <div class="stat-info">
+                        <h3 id="avg-products">0</h3>
+                        <p>Moyenne produits/catégorie</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Toutes les catégories</h3>
+                    <div class="table-actions">
+                        <button class="btn-icon" id="refresh-categories">
+                            🔄 Actualiser
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Catégorie</th>
+                                <th>Description</th>
+                                <th>Produits</th>
+                                <th>Créée le</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categories-table-body">
+                            <!-- Categories loaded dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Category Modal -->
+    <div class="modal" id="category-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Ajouter une catégorie</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            
+            <form id="category-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="category-name">Nom de la catégorie *</label>
+                        <input type="text" id="category-name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category-description">Description</label>
+                        <textarea id="category-description" name="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="category-image">Image URL</label>
+                        <input type="url" id="category-image" name="image_url" placeholder="https://...">
+                    </div>
+                    
+                    <div class="image-preview" id="category-image-preview" style="display: none;">
+                        <img id="category-preview-image" src="" alt="Aperçu">
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="modal-cancel">
+                        Annuler
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="delete-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmer la suppression</h3>
+                <button class="modal-close" id="delete-modal-close">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer cette catégorie ?</p>
+                <p class="text-danger" id="delete-warning">
+                    Attention: Cette catégorie contient <span id="products-count">0</span> produit(s).
+                    Ces produits seront déplacés vers la catégorie "Non classé".
+                </p>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="delete-cancel">
+                    Annuler
+                </button>
+                <button type="button" class="btn btn-danger" id="delete-confirm">
+                    Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script type="module" src="../JS/supabase.js"></script>
+    <script type="module" src="../JS/admin.js"></script>
+    <script type="module" src="../JS/admin-categories.js"></script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord Admin - E-Shop</title>
+    <link rel="stylesheet" href="../CSS/style.css">
+    <link rel="stylesheet" href="../CSS/admin.css">
+</head>
+<body class="admin-body">
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-header">
+            <h2>E-SHOP ADMIN</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item active">
+                    <a href="index.html" class="nav-link">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Tableau de bord</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="products.html" class="nav-link">
+                        <span class="nav-icon">📦</span>
+                        <span class="nav-text">Produits</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="categories.html" class="nav-link">
+                        <span class="nav-icon">🏷️</span>
+                        <span class="nav-text">Catégories</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="orders.html" class="nav-link">
+                        <span class="nav-icon">📋</span>
+                        <span class="nav-text">Commandes</span>
+                        <span class="badge" id="pending-orders-count">0</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="users.html" class="nav-link">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Utilisateurs</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="../index.html" class="btn btn-secondary btn-sm">
+                ← Retour au site
+            </a>
+            <button id="admin-logout" class="btn btn-danger btn-sm">
+                Déconnexion
+            </button>
+        </div>
+    </aside>
+
+    <!-- Admin Main Content -->
+    <main class="admin-main">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <button class="sidebar-toggle" id="sidebar-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h1>Tableau de bord</h1>
+            </div>
+            
+            <div class="header-right">
+                <div class="admin-user">
+                    <span id="admin-user-name">Administrateur</span>
+                    <div class="user-avatar" id="admin-user-avatar">A</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="admin-content">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon revenue">💰</div>
+                    <div class="stat-info">
+                        <h3 id="total-revenue">0,00 €</h3>
+                        <p>Chiffre d'affaires total</p>
+                    </div>
+                    <div class="stat-trend positive" id="revenue-trend">+12%</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon orders">📦</div>
+                    <div class="stat-info">
+                        <h3 id="total-orders">0</h3>
+                        <p>Commandes totales</p>
+                    </div>
+                    <div class="stat-trend positive" id="orders-trend">+8%</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon products">🛍️</div>
+                    <div class="stat-info">
+                        <h3 id="total-products">0</h3>
+                        <p>Produits actifs</p>
+                    </div>
+                    <div class="stat-trend positive" id="products-trend">+5%</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon users">👥</div>
+                    <div class="stat-info">
+                        <h3 id="total-users">0</h3>
+                        <p>Utilisateurs actifs</p>
+                    </div>
+                    <div class="stat-trend positive" id="users-trend">+15%</div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div class="charts-row">
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h3>Ventes mensuelles</h3>
+                        <select id="sales-period">
+                            <option value="30">30 derniers jours</option>
+                            <option value="90">3 derniers mois</option>
+                            <option value="180">6 derniers mois</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="sales-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="card-header">
+                        <h3>Top catégories</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="categories-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="activity-row">
+                <div class="activity-card">
+                    <div class="card-header">
+                        <h3>Commandes récentes</h3>
+                        <a href="orders.html" class="view-all">Voir tout</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Commande</th>
+                                    <th>Client</th>
+                                    <th>Date</th>
+                                    <th>Montant</th>
+                                    <th>Statut</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-orders">
+                                <!-- Orders loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="activity-card">
+                    <div class="card-header">
+                        <h3>Produits populaires</h3>
+                        <a href="products.html" class="view-all">Voir tout</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Prix</th>
+                                    <th>Ventes</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="popular-products">
+                                <!-- Products loaded dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="../JS/supabase.js"></script>
+    <script type="module" src="../JS/admin.js"></script>
+</body>
+</html>

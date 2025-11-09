@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail Produit - E-Shop</title>
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">E-SHOP</a>
+                
+                <nav class="nav">
+                    <ul>
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="shop.html">Boutique</a></li>
+                        <li><a href="#categories">Catégories</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <a href="login.html" class="btn btn-secondary">Connexion</a>
+                    <a href="register.html" class="btn btn-primary">Inscription</a>
+                    <div class="cart-icon">
+                        <a href="cart.html">🛒</a>
+                        <span class="cart-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Product Detail Section -->
+    <section class="section product-detail-section">
+        <div class="container">
+            <div id="product-detail-container">
+                <!-- Product detail loaded dynamically -->
+                <div class="loading-spinner">
+                    <p>Chargement du produit...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Related Products Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Produits similaires</h2>
+            <div class="products-grid" id="related-products">
+                <!-- Related products loaded dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>E-SHOP</h3>
+                    <p>Votre destination shopping pour des produits de qualité à prix abordables.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Liens rapides</h3>
+                    <ul>
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="shop.html">Boutique</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Catégories</h3>
+                    <ul id="footer-categories">
+                        <!-- Categories loaded dynamically -->
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li>Email: contact@eshop.fr</极客时间>
+                        <li>Téléphone: +33 1 23 45 67 89</li>
+                        <li>Adresse: 123 Rue du Commerce, Paris</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 E-SHOP. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="JS/product-detail.js"></script>
+</body>
+</html>

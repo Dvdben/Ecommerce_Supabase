@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique - E-Shop</title>
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">E-SHOP</a>
+                
+                <nav class="nav">
+                    <ul>
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="shop.html" class="active">Boutique</a></li>
+                        <li><a href="#categories">Catégories</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-actions">
+                    <a href="login.html" class="btn btn-secondary">Connexion</a>
+                    <a href="register.html" class="btn btn-primary">Inscription</a>
+                    <div class="cart-icon">
+                        <a href="cart.html">🛒</a>
+                        <span class="cart-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Shop Header -->
+    <section class="shop-header">
+        <div class="container">
+            <h1>Notre Boutique</h1>
+            <p>Découvrez tous nos produits</p>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters">
+        <div class="container">
+            <div class="filter-content">
+                <div class="filter-group">
+                    <label for="category-filter">Catégorie:</label>
+                    <select id="category-filter">
+                        <option value="">Toutes les catégories</option>
+                        <!-- Categories loaded dynamically -->
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="sort-filter">Trier par:</label>
+                    <select id="sort-filter">
+                        <option value="created-desc">Nouveautés</option>
+                        <option value="price-asc">Prix croissant</option>
+                        <option value="price-desc">Prix décroissant</option>
+                        <option value="name-asc">Nom A-Z</option>
+                        <option value="name-desc">Nom Z-A</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="search-filter">Recherche:</label>
+                    <input type="text" id="search-filter" placeholder="Rechercher un produit...">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="section">
+        <div class="container">
+            <div class="products-header">
+                <h2 id="products-count">Produits (0)</h2>
+            </div>
+            
+            <div class="products-grid" id="products-container">
+                <!-- Products loaded dynamically -->
+            </div>
+            
+            <div class="pagination" id="pagination">
+                <!-- Pagination controls -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>E-SHOP</h3>
+                    <p>Votre destination shopping pour des produits de qualité à prix abordables.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Liens rapides</h3>
+                    <ul>
+                        <极客时间><a href="index.html">Accueil</a></li>
+                        <li><a href="shop.html">Boutique</a></li>
+                        <li><a href="#about">À propos</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Catégories</h3>
+                    <ul id="footer-categories">
+                        <!-- Categories loaded dynamically -->
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li>Email: contact@eshop.fr</li>
+                        <li>Téléphone: +33 1 23 45 67 89</li>
+                        <li>Adresse: 123 Rue du Commerce, Paris</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 E-SHOP. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="JS/shop.js"></script>
+</body>
+</html>

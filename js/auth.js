@@ -2,7 +2,7 @@
 import { supabase } from './supabase.js';
 
 // Éléments du DOM
-let loginForm, registerForm, forgotPasswordForm;
+let loginForm, registerForm;
 let userAvatar, userDropdown, loginLink, registerLink, profileLink, ordersLink, logoutLink;
 
 // Initialisation de l'authentification
@@ -17,7 +17,6 @@ function initializeAuthElements() {
     // Formulaires
     loginForm = document.getElementById('login-form');
     registerForm = document.getElementById('register-form');
-    forgotPasswordForm = document.getElementById('forgot-password-form');
     
     // Menu utilisateur
     userAvatar = document.getElementById('user-avatar');
@@ -32,15 +31,11 @@ function initializeAuthElements() {
 // Vérifier l'état d'authentification
 async function checkAuthState() {
     try {
-        const { data: { session }, error } = await supabase.auth.getSession();
-        
-        if (error) {
-            console.error('Erreur vérification session:', error);
-            return;
-        }
+        const { data: { session } } = await supabase.auth.getSession();
         
         if (session) {
             updateUIForLoggedInUser(session.user);
+            await createUserProfileIfNeeded(session.user);
         } else {
             updateUIForLoggedOutUser();
         }
@@ -49,38 +44,65 @@ async function checkAuthState() {
     }
 }
 
+// Créer le profil utilisateur si nécessaire
+async function createUserProfileIfNeeded(user) {
+    try {
+        // Vérifier si le profil existe déjà
+        const { data: existingProfile } = await supabase
+            .from('app_users')
+            .select('id')
+            .eq('id', user.id)
+            .single();
+
+        if (!existingProfile) {
+            // Créer le profil dans app_users
+            const { error } = await supabase
+                .from('app_users')
+                .insert([{
+                    id: user.id,
+                    email: user.email,
+                    first_name: user.user_metadata?.first_name || '',
+                    last_name: user.user_metadata?.last_name || '',
+                    newsletter_sul: user.user_metadata?.newsletter_subscribed || false
+                }]);
+
+            if (error) console.warn('Profil non créé (peut exister ailleurs):', error);
+        }
+    } catch (error) {
+        console.log('Profil utilisateur déjà existant ou autre table utilisée');
+    }
+}
+
 // Mettre à jour l'UI pour un utilisateur connecté
 function updateUIForLoggedInUser(user) {
-    // Mettre à jour l'avatar utilisateur
     if (userAvatar) {
         const initials = getUserInitials(user);
         userAvatar.textContent = initials;
+        userAvatar.style.display = 'flex';
     }
     
-    // Afficher/masquer les liens du menu
-    if (loginLink) loginLink.style.display = 'none';
-    if (registerLink) registerLink.style.display = 'none';
-    if (profileLink) profileLink.style.display = 'block';
-    if (ordersLink) ordersLink.style.display = 'block';
-    if (logoutLink) logoutLink.style.display = 'block';
+    [loginLink, registerLink].forEach(link => {
+        if (link) link.style.display = 'none';
+    });
     
-    // Remplir automatiquement les champs du checkout si disponible
-    if (window.location.pathname.includes('checkout')) {
-        prefillCheckoutForm(user);
-    }
+    [profileLink, ordersLink, logoutLink].forEach(link => {
+        if (link) link.style.display = 'block';
+    });
 }
 
 // Mettre à jour l'UI pour un utilisateur non connecté
 function updateUIForLoggedOutUser() {
     if (userAvatar) {
-        userAvatar.textContent = 'U';
+        userAvatar.style.display = 'none';
     }
     
-    if (loginLink) loginLink.style.display = 'block';
-    if (registerLink) registerLink.style.display = 'block';
-    if (profileLink) profileLink.style.display = 'none';
-    if (ordersLink) ordersLink.style.display = 'none';
-    if (logoutLink) logoutLink.style.display = 'none';
+    [loginLink, registerLink].forEach(link => {
+        if (link) link.style.display = 'block';
+    });
+    
+    [profileLink, ordersLink, logoutLink].forEach(link => {
+        if (link) link.style.display = 'none';
+    });
 }
 
 // Configurer les écouteurs d'événements
@@ -100,10 +122,6 @@ function setupEventListeners() {
         setupPasswordValidation();
     }
     
-    if (forgotPasswordForm) {
-        forgotPasswordForm.addEventListener('submit', handleForgotPassword);
-    }
-    
     // Déconnexion
     if (logoutLink) {
         logoutLink.addEventListener('click', handleLogout);
@@ -111,7 +129,9 @@ function setupEventListeners() {
     
     // Fermer le menu déroulant en cliquant à l'extérieur
     document.addEventListener('click', function(event) {
-        if (userDropdown && userAvatar && !userAvatar.contains(event.target) && !userDropdown.contains(event.target)) {
+        if (userDropdown && userAvatar && 
+            !userAvatar.contains(event.target) && 
+            !userDropdown.contains(event.target)) {
             userDropdown.classList.remove('show');
         }
     });
@@ -119,9 +139,7 @@ function setupEventListeners() {
 
 // Basculer le menu déroulant utilisateur
 function toggleUserDropdown() {
-    if (userDropdown) {
-        userDropdown.classList.toggle('show');
-    }
+    userDropdown?.classList.toggle('show');
 }
 
 // Gérer la connexion
@@ -131,26 +149,15 @@ async function handleLogin(event) {
     const formData = new FormData(loginForm);
     const email = formData.get('email');
     const password = formData.get('password');
-    const remember = formData.get('remember');
     
     try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-            email,
-            password,
-        });
-        
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         
         showNotification('Connexion réussie !', 'success');
-        
-        // Rediriger vers la page précédente ou l'accueil
-        setTimeout(() => {
-            const redirectUrl = getRedirectUrl();
-            window.location.href = redirectUrl;
-        }, 1000);
+        setTimeout(() => window.location.href = getRedirectUrl(), 1000);
         
     } catch (error) {
-        console.error('Erreur de connexion:', error.message);
         showNotification(error.message, 'error');
     }
 }
@@ -168,97 +175,50 @@ async function handleRegister(event) {
     const terms = formData.get('terms');
     const newsletter = formData.get('newsletter');
     
-    // Validation des mots de passe
+    // Validations
     if (password !== confirmPassword) {
         showNotification('Les mots de passe ne correspondent pas', 'error');
         return;
     }
     
     if (!terms) {
-        showNotification('Veuillez accepter les conditions d\'utilisation', 'error');
+        showNotification('Veuillez accepter les conditions', 'error');
         return;
     }
     
     try {
-        // 1. Créer le compte d'authentification
+        // 1. Créer le compte Auth
         const { data: authData, error: authError } = await supabase.auth.signUp({
             email,
             password,
             options: {
-                data: {
-                    first_name: firstName,
-                    last_name: lastName,
-                    newsletter_subscribed: newsletter || false
-                }
+                data: { first_name: firstName, last_name: lastName }
             }
         });
         
         if (authError) throw authError;
         
-        // 2. Ajouter l'utilisateur dans la table users
+        // 2. Créer le profil dans app_users
         if (authData.user) {
-            const fullName = `${firstName} ${lastName}`;
+            const { error: profileError } = await supabase
+                .from('app_users')
+                .insert([{
+                    id: authData.user.id,
+                    email: email,
+                    first_name: firstName,
+                    last_name: lastName,
+                    newsletter_sul: newsletter || false
+                }]);
             
-            const { data: userData, error: userError } = await supabase
-                .from('users')
-                .insert([
-                    {
-                        id: authData.user.id,
-                        email: email,
-                        full_name: fullName,
-                        first_name: firstName,
-                        last_name: lastName,
-                        newsletter_subscribed: newsletter || false,
-                        is_admin: false,
-                        is_active: true,
-                        created_at: new Date().toISOString()
-                    }
-                ])
-                .select();
-            
-            if (userError) {
-                console.error('Erreur création user:', userError);
-                // Ne pas bloquer l'inscription même si l'insertion échoue
-                // L'utilisateur pourra compléter son profil plus tard
-            } else {
-                console.log('Utilisateur créé dans la table:', userData);
+            if (profileError) {
+                console.warn('Profil non créé:', profileError);
             }
         }
         
-        showNotification('Inscription réussie ! Vérifiez votre email pour confirmer votre compte.', 'success');
-        
-        // Rediriger vers la page de connexion après inscription
-        setTimeout(() => {
-            window.location.href = 'login.html';
-        }, 2000);
+        showNotification('Inscription réussie ! Vérifiez votre email.', 'success');
+        setTimeout(() => window.location.href = 'login.html', 2000);
         
     } catch (error) {
-        console.error('Erreur d\'inscription:', error.message);
-        showNotification(error.message, 'error');
-    }
-}
-
-// Gérer la réinitialisation du mot de passe
-async function handleForgotPassword(event) {
-    event.preventDefault();
-    
-    const formData = new FormData(forgotPasswordForm);
-    const email = formData.get('email');
-    
-    try {
-        const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${window.location.origin}/reset-password.html`,
-        });
-        
-        if (error) throw error;
-        
-        showNotification('Instructions de réinitialisation envoyées à votre email', 'success');
-        
-        // Fermer la modale
-        closeModal('forgot-password-modal');
-        
-    } catch (error) {
-        console.error('Erreur d\'envoi d\'email:', error.message);
         showNotification(error.message, 'error');
     }
 }
@@ -269,23 +229,17 @@ async function handleLogout(event) {
     
     try {
         const { error } = await supabase.auth.signOut();
-        
         if (error) throw error;
         
         showNotification('Déconnexion réussie', 'success');
-        
-        // Rediriger vers l'accueil
-        setTimeout(() => {
-            window.location.href = '../index.html';
-        }, 1000);
+        setTimeout(() => window.location.href = '../index.html', 1000);
         
     } catch (error) {
-        console.error('Erreur de déconnexion:', error.message);
         showNotification(error.message, 'error');
     }
 }
 
-// Configurer la validation du mot de passe
+// Configuration validation mot de passe
 function setupPasswordValidation() {
     const passwordInput = document.getElementById('register-password');
     const confirmInput = document.getElementById('confirm-password');
@@ -293,23 +247,17 @@ function setupPasswordValidation() {
     const strengthText = document.getElementById('password-strength-text');
     const matchError = document.getElementById('password-match-error');
     
-    if (passwordInput) {
-        passwordInput.addEventListener('input', function() {
-            const strength = checkPasswordStrength(this.value);
+    if (passwordInput && strengthFill && strengthText) {
+        passwordInput.addEventListener('input', () => {
+            const strength = checkPasswordStrength(passwordInput.value);
             updatePasswordStrengthUI(strength, strengthFill, strengthText);
-            
-            // Vérifier la correspondance des mots de passe
-            if (confirmInput && confirmInput.value) {
-                checkPasswordMatch(passwordInput.value, confirmInput.value, matchError);
-            }
+            if (confirmInput?.value) checkPasswordMatch(passwordInput.value, confirmInput.value, matchError);
         });
     }
     
-    if (confirmInput) {
-        confirmInput.addEventListener('input', function() {
-            if (passwordInput) {
-                checkPasswordMatch(passwordInput.value, this.value, matchError);
-            }
+    if (confirmInput && matchError) {
+        confirmInput.addEventListener('input', () => {
+            if (passwordInput) checkPasswordMatch(passwordInput.value, confirmInput.value, matchError);
         });
     }
 }
@@ -317,78 +265,37 @@ function setupPasswordValidation() {
 // Vérifier la force du mot de passe
 function checkPasswordStrength(password) {
     let strength = 0;
-    
     if (password.length >= 8) strength++;
     if (password.match(/[a-z]/)) strength++;
     if (password.match(/[A-Z]/)) strength++;
     if (password.match(/[0-9]/)) strength++;
     if (password.match(/[^a-zA-Z0-9]/)) strength++;
     
-    if (strength <= 2) return 'weak';
-    if (strength <= 4) return 'medium';
-    return 'strong';
+    return strength <= 2 ? 'weak' : strength <= 4 ? 'medium' : 'strong';
 }
 
-// Mettre à jour l'UI de force du mot de passe
+// Mettre à jour l'UI de force
 function updatePasswordStrengthUI(strength, strengthFill, strengthText) {
-    if (!strengthFill || !strengthText) return;
+    const strengthLabels = { 'weak': 'Faible', 'medium': 'Moyen', 'strong': 'Fort' };
     
-    strengthFill.className = 'strength-fill';
-    strengthText.className = 'strength-text';
-    
-    strengthFill.classList.add(strength);
-    strengthText.classList.add(strength);
-    
-    const strengthLabels = {
-        'weak': 'Faible',
-        'medium': 'Moyen',
-        'strong': 'Fort'
-    };
-    
+    strengthFill.className = `strength-fill ${strength}`;
+    strengthText.className = `strength-text ${strength}`;
     strengthText.textContent = strengthLabels[strength];
 }
 
-// Vérifier la correspondance des mots de passe
+// Vérifier la correspondance
 function checkPasswordMatch(password, confirmPassword, errorElement) {
-    if (!errorElement) return;
-    
-    if (password !== confirmPassword && confirmPassword.length > 0) {
-        errorElement.style.display = 'block';
-    } else {
-        errorElement.style.display = 'none';
+    if (errorElement) {
+        errorElement.style.display = password !== confirmPassword ? 'block' : 'none';
     }
 }
 
-// Obtenir les initiales de l'utilisateur
+// Obtenir les initiales
 function getUserInitials(user) {
     if (user.user_metadata?.first_name && user.user_metadata?.last_name) {
         return `${user.user_metadata.first_name[0]}${user.user_metadata.last_name[0]}`.toUpperCase();
     }
-    
-    if (user.email) {
-        return user.email[0].toUpperCase();
-    }
-    
-    return 'U';
-}
-
-// Pré-remplir le formulaire de checkout
-function prefillCheckoutForm(user) {
-    const emailInput = document.getElementById('checkout-email');
-    const firstNameInput = document.getElementById('checkout-first-name');
-    const lastNameInput = document.getElementById('checkout-last-name');
-    
-    if (emailInput && user.email) {
-        emailInput.value = user.email;
-    }
-    
-    if (firstNameInput && user.user_metadata?.first_name) {
-        firstNameInput.value = user.user_metadata.first_name;
-    }
-    
-    if (lastNameInput && user.user_metadata?.last_name) {
-        lastNameInput.value = user.user_metadata.last_name;
-    }
+    return user.email?.[0]?.toUpperCase() || 'U';
 }
 
 // Obtenir l'URL de redirection
@@ -396,13 +303,10 @@ function getRedirectUrl() {
     const urlParams = new URLSearchParams(window.location.search);
     const redirect = urlParams.get('redirect');
     
-    if (redirect) {
-        return decodeURIComponent(redirect);
-    }
+    if (redirect) return decodeURIComponent(redirect);
     
-    // Rediriger vers la page précédente ou l'accueil
     const referrer = document.referrer;
-    if (referrer && !referrer.includes('login') && !referrer.includes('register')) {
+    if (referrer && !referrer.includes('auth')) {
         return referrer;
     }
     
@@ -411,7 +315,6 @@ function getRedirectUrl() {
 
 // Afficher une notification
 function showNotification(message, type = 'info') {
-    // Créer l'élément de notification
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.innerHTML = `
@@ -419,32 +322,16 @@ function showNotification(message, type = 'info') {
         <button class="notification-close">&times;</button>
     `;
     
-    // Ajouter au body
     document.body.appendChild(notification);
     
-    // Fermer la notification
-    const closeBtn = notification.querySelector('.notification-close');
-    closeBtn.addEventListener('click', () => {
+    notification.querySelector('.notification-close').addEventListener('click', () => {
         notification.remove();
     });
     
-    // Supprimer automatiquement après 5 secondes
-    setTimeout(() => {
-        if (notification.parentNode) {
-            notification.remove();
-        }
-    }, 5000);
+    setTimeout(() => notification.remove(), 5000);
 }
 
-// Fermer une modale
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('show');
-    }
-}
-
-// Écouter les changements d'état d'authentification
+// Écouter les changements d'état
 supabase.auth.onAuthStateChange((event, session) => {
     if (event === 'SIGNED_IN' && session) {
         updateUIForLoggedInUser(session.user);
@@ -453,9 +340,4 @@ supabase.auth.onAuthStateChange((event, session) => {
     }
 });
 
-// Exporter les fonctions pour une utilisation externe
-export {
-    checkAuthState,
-    getUserInitials,
-    showNotification
-};
+export { checkAuthState, getUserInitials, showNotification };
